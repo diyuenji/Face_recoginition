@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import cv2
 import os
 
-image_path="Images"
+image_path="ImageRaw"
 image_size=216
 imageraw_path="ID_image"
 
@@ -22,18 +22,16 @@ backends = [
 
 imgList=[]
 for filename in os.listdir(imageraw_path):
-    imgList.append(os.path.join(imageraw_path,filename))
+    imgList.append(filename)
     print(imgList)
-    
-for image in imgList:
-  image_name=image
-  image=cv2.imread(image)
-  print(image)
+
+for image_name in imgList:
+  image=cv2.imread(os.path.join(imageraw_path,image_name))
+  # print(image)
   height, width,_=image.shape
   image=cv2.resize(image,(int(width/2),int(height/2)))
 
   face_objs = DeepFace.extract_faces(img_path = image, 
-          target_size = (216, 216), 
           detector_backend = backends[3]
   )
   # plt.imshow(face_objs)
@@ -58,7 +56,7 @@ for image in imgList:
   crop_image=cv2.resize(crop_image,(image_size,image_size))
 
   cv2.imshow("crop Img", crop_image)
-  # cv2.waitKey(0)
-  cv2.imwrite(image_name, crop_image) 
+  cv2.waitKey(0)
+  cv2.imwrite(os.path.join(image_path,image_name), crop_image) 
   # print(face_objs["facial_area"])
   print(image_name)

@@ -2,7 +2,7 @@ import cv2
 import face_recognition
 import os
 
-#define width anhd heigth of img after cropped
+#define width and heigth of img after cropped
 img_width_cropped=216
 img_height_cropped=216
 

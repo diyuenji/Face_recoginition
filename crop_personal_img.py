@@ -7,7 +7,7 @@ imageid_path = "ID_image"
 output_path  = "ImageRaw"
 imgList=[]
 
-model1=YOLO("yolov8n.pt")
+model=YOLO("yolov8n.pt")
 
 for filename in os.listdir(imageid_path):
     imgList.append(filename)
@@ -17,24 +17,25 @@ for filename in os.listdir(imageid_path):
 
 for filename in imgList:
     image_path=os.path.join(imageid_path,filename)
-    results1=model1.predict(source=image_path)
-    # for r in results1:
-    #     im_array = r.plot()  # plot a BGR numpy array of predictions
-    #     im = Image.fromarray(im_array[..., ::-1])  # RGB PIL image
-    #     im.show()  # show image
+    results=model.predict(source=image_path)
+    for r in results:  # View facial detection of your ID card
+        im_array = r.plot()  # plot a BGR numpy array of predictions
+        im = Image.fromarray(im_array[..., ::-1])  # RGB PIL image
+        im.show()  # show image
+    
+    class_names = model.names    
+    for r in results:
+        for box in r.boxes:
+            if(int(box.cls[0])==0):  # label of "person" in yolov8
+                boxes = box  # Boxes object for bbox outputs
+                x_topleft, y_topleft = int(boxes.xyxy[0][0]), int(boxes.xyxy[0][2])
+                x_botright, y_botright = int(boxes.xyxy[0][1]), int(boxes.xyxy[0][3])
+            else:
+                print("Can not detect facial image in ID card")
         
-    for r in results1:
-            boxes = r.boxes  # Boxes object for bbox outputs
-            masks = r.masks  # Masks object for segment masks outputs
-            probs = r.probs  # Class probabilities for classification outputs
-            # print(boxes)
-    print("axis")
-    print(boxes.xyxy[0][0],boxes.xyxy[0][1],boxes.xyxy[0][2],boxes.xyxy[0][3]) # print       
     image=cv2.imread(image_path)
 
-    # im1 = im.crop((left, top, right, bottom))
-    crop_image = image[int(boxes.xyxy[0][2]):int(boxes.xyxy[0][3]),int(boxes.xyxy[0][0]):int(boxes.xyxy[0][1])]
-    # im1 = im.crop((int(boxes.xyxy[0][0]),int(boxes.xyxy[0][1]), int(boxes.xyxy[0][2]), int(boxes.xyxy[0][3])))
+    crop_image = image[y_topleft:y_botright,x_topleft:x_botright] # height, width
     cv2.imwrite(os.path.join(output_path,filename), crop_image)
  
  

@@ -2,7 +2,7 @@ import json
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
-cred = credentials.Certificate("serviceAccountKey.json")
+cred = credentials.Certificate("serviceAccountKey.json") # To get the key follow instruction https://clemfournier.medium.com/how-to-get-my-firebase-service-account-key-file-f0ec97a21620
 firebase_admin.initialize_app(cred,{
     'databaseURL':"https://facevalidaterealtime-default-rtdb.asia-southeast1.firebasedatabase.app/"
 }
@@ -19,6 +19,14 @@ print(id_data)
 data = {
     "080802":{
         "name": "Nhat Quan",
+        "id": "0000",
+        "birth_year":2002,
+        "major":"undegraduate",
+        "get-married":"N",
+        "last_attendance_time":"2023-12-10 00:54:34"
+    },
+    "110202BD":{
+        "name": "Ba Dung",
         "id": "0000",
         "birth_year":2002,
         "major":"undegraduate",
@@ -59,5 +67,5 @@ data = {
     },
 }
 
-for key, value in id_data.items():
+for key, value in data.items():
     ref.child(key).set(value)#send data to specific directory
